@@ -37,8 +37,8 @@ class Highway extends Block {
 
   initRoadMarks() {
     let offsetX = this.width / 3;
-    let width = 2;
-    let height = 30;
+    let width = 4;
+    let height = 80;
     let posY = -height;
 
     this.roadMarks = []
@@ -54,11 +54,13 @@ class Highway extends Block {
 }
 
 const KEYS = {left : false, right : false};
-const ROAD_MARKS_AMOUNT = 10;
+const ROAD_MARKS_AMOUNT = 4;
 const HIGHWAY_WIDTH = WIDTH / 1.3;
 const GRASS_BLOCKS = [];
 const CAR_WIDTH = 45;
 const CAR_HEIGHT = 60;
+const BACKGROUND_SPEED = 26;
+const TRAFFIC_SPEED = 10;
 
 // Make these globals easy to find byt using uppercase for now.
 var ROAD;
@@ -75,7 +77,7 @@ function gameLoop() {
 
 function initGame() {
     ROAD = new Highway((WIDTH / 2) - (HIGHWAY_WIDTH / 2), 0, HIGHWAY_WIDTH, HEIGHT, "#2A2A2A");
-    PLAYER = new Car(ROAD.x + ROAD.width / 2 - CAR_WIDTH / 2, HEIGHT - CAR_HEIGHT * 1.6, CAR_WIDTH, CAR_HEIGHT, "blue", 2);
+    PLAYER = new Car(ROAD.x + ROAD.width / 2 - CAR_WIDTH / 2, HEIGHT - CAR_HEIGHT * 2.5, CAR_WIDTH, CAR_HEIGHT, "blue", 2);
     createTraffic();
     initGrassBlocks();
     gameLoop();
@@ -91,6 +93,7 @@ function draw() {
 function update() {
   updateGrassBlocks();
   updateRoad();
+  updateTraffic();
   updatePlayer();
 }
 
@@ -127,6 +130,22 @@ function updatePlayer() {
   KEYS.left = false;
 }
 
+function updateTraffic() {
+  let lastIndex = TRAFFIC[TRAFFIC.length - 1];
+  if (lastIndex.y > HEIGHT) {
+    console.log("LOL");
+    let car = TRAFFIC.pop();
+    let posObj = randomizeLanePos();
+    car.x = posObj.x;
+    car.lane = posObj.lane;
+    car.y = -car.height;
+    TRAFFIC.unshift(car);
+  }
+  for (let car of TRAFFIC) {
+    car.y += TRAFFIC_SPEED;
+  }
+}
+
 function updateRoad() {
   let lastIndex = ROAD.roadMarks[ROAD.roadMarks.length-1];
   if (lastIndex.mark_one.y > HEIGHT) {
@@ -138,8 +157,8 @@ function updateRoad() {
   }
 
   for (let markPair of ROAD.roadMarks) {
-    markPair.mark_one.y += 8;
-    markPair.mark_two.y += 8;
+    markPair.mark_one.y += SPEED;
+    markPair.mark_two.y += SPEED;
   }
 }
 
@@ -154,7 +173,7 @@ function updateGrassBlocks() {
   }
 
   for (let block of GRASS_BLOCKS) {
-    block.y += 3;
+    block.y += SPEED;
   }
 }
 
@@ -172,31 +191,35 @@ function initGrassBlocks() {
   }
 }
 
-function createTraffic() {
-  let amountOfTraffic = 3
+function randomizeLanePos() {
   let roadBlock = ROAD.width / 3;
   let carOffsetX = roadBlock / 2 - CAR_WIDTH / 2;
+  let lane = Math.floor(Math.random()*3)+1;
+  let xPos = 0;
+  switch (lane) {
+    case 1:
+      xPos = ROAD.x + carOffsetX;
+      break;
+    case 2:
+      xPos = ROAD.x + roadBlock + carOffsetX;
+      break;
+    case 3:
+      xPos = ROAD.x + roadBlock * 2 + carOffsetX;
+      break;
+    default:
+  }
+  return x = {x : xPos, lane : lane};
+}
+
+function createTraffic() {
+  let amountOfTraffic = 3;
   let offsetY = HEIGHT / amountOfTraffic;
   let yPos = 0;
   for (let i = 0; i < amountOfTraffic; i++) {
-    let lane = Math.floor(Math.random()*3)+1;
-    let xPos = 0;
-    switch (lane) {
-      case 1:
-        xPos = ROAD.x + carOffsetX;
-        break;
-      case 2:
-        xPos = ROAD.x + roadBlock + carOffsetX;
-        break;
-      case 3:
-        xPos = ROAD.x + roadBlock * 2 + carOffsetX;
-        break;
-      default:
-    }
-    TRAFFIC.push(new Car(xPos, yPos, CAR_WIDTH, CAR_HEIGHT, "#7a003d", lane))
+    let xPos = randomizeLanePos();
+    TRAFFIC.push(new Car(xPos.x, yPos, CAR_WIDTH, CAR_HEIGHT, "#7a003d", xPos.lane))
     yPos += offsetY;
   }
-  console.log(TRAFFIC.length);
 }
 
 function drawTraffic() {
