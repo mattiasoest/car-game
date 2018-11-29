@@ -62,10 +62,11 @@ const TRAFFIC_SPEED     = 11;
 // Make these globals easy to find byt using uppercase for now.
 var ROAD;
 var PLAYER;
-var TRAFFIC   = [];
-var POINTS     = 0;
-var CRASH_SOUND = new Audio("sounds/car_crash.wav");
-var POINT_SOUND = new Audio("sounds/points_10.wav");
+var TRAFFIC = [];
+var POINTS = 0;
+var CRASH_SOUND;
+var POINT_SOUND;
+var START_GAME_SOUND;
 var CURRENT_STATE = GAME_STATE.MENU;
 //Run the game!
 //=====================================================
@@ -85,6 +86,7 @@ function gameLoop() {
 }
 
 function initGame() {
+    loadSounds();
     createRoad();
     createTraffic();
     createPlayer();
@@ -127,6 +129,16 @@ function update() {
 
 // Helpers
 //=====================================================
+
+function loadSounds() {
+  CRASH_SOUND = new Audio("sounds/car_crash.wav");
+  POINT_SOUND = new Audio("sounds/points_10.wav");
+  START_GAME_SOUND = new Audio("sounds/car_start_game.wav");
+
+  CRASH_SOUND.volume = 0.15;
+  POINT_SOUND.volume = 0.15;
+  START_GAME_SOUND.volume = 0.1;
+}
 function resetGame() {
   CURRENT_STATE = GAME_STATE.MENU;
   POINTS = 0;
@@ -163,6 +175,7 @@ function initGrassBlocks() {
 function checkInput(event) {
   var key_state = (event.type == "keydown") ? true : false;
   if (key_state && CURRENT_STATE === GAME_STATE.MENU) {
+    START_GAME_SOUND.play();
     CURRENT_STATE = GAME_STATE.PLAY;
   }
   switch(event.keyCode) {
