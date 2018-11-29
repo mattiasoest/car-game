@@ -86,9 +86,9 @@ function gameLoop() {
 }
 
 function initGame() {
-    ROAD = new Highway((WIDTH / 2) - (HIGHWAY_WIDTH / 2), 0, HIGHWAY_WIDTH, HEIGHT, "#2A2A2A");
-    PLAYER = new Car(ROAD.x + ROAD.width / 2 - CAR_WIDTH / 2, HEIGHT - CAR_HEIGHT * 2.5, CAR_WIDTH, CAR_HEIGHT, "blue", 2);
+    createRoad();
     createTraffic();
+    createPlayer();
     initGrassBlocks();
 }
 
@@ -104,10 +104,30 @@ function update() {
   updateRoad();
   updateTraffic();
   updatePlayer();
+  checkPlayerCollision();
 }
 
 // Helpers
 //=====================================================
+function resetGame() {
+  // TODO: Keep the pos of the player for now, looks weird
+  // without animations to reset everything.
+  // Just need to update 2 attributes for the player
+  // PLAYER.x = ROAD.x + ROAD.width / 2 - CAR_WIDTH / 2;
+  // PLAYER.lane = 2;
+  // Create new cars for now.
+  // Somewhat of a waste but will do for now.
+  TRAFFIC = [];
+  createTraffic();
+}
+
+function createPlayer() {
+  PLAYER = new Car(ROAD.x + ROAD.width / 2 - CAR_WIDTH / 2, HEIGHT - CAR_HEIGHT * 2.5, CAR_WIDTH, CAR_HEIGHT, "blue", 2);
+}
+
+function createRoad() {
+  ROAD = new Highway((WIDTH / 2) - (HIGHWAY_WIDTH / 2), 0, HIGHWAY_WIDTH, HEIGHT, "#2A2A2A");
+}
 function initGrassBlocks() {
   // Needs to be split in an odd number
   let screenSplit = 5;
@@ -166,7 +186,15 @@ function createTraffic() {
 }
 
 function checkPlayerCollision() {
-
+  let nearestCar = TRAFFIC[TRAFFIC.length -1];
+  // Only check collision if neccessary
+  if (nearestCar.y + nearestCar.height > PLAYER.y && nearestCar.y < PLAYER.y+ PLAYER.height) {
+    // Easy detection with lane system.
+    if (PLAYER.lane === nearestCar.lane) {
+      console.log("BAM");
+      resetGame();
+    }
+  }
 }
 
 // Updaters
