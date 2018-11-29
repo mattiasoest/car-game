@@ -3,6 +3,8 @@ const ctx    = cvs.getContext("2d");
 const WIDTH  = cvs.width;
 const HEIGHT = cvs.height;
 
+window.addEventListener("keydown", checkInput)
+
 class Block {
   constructor(x, y, width, height, color) {
     this.width  = width;
@@ -51,6 +53,7 @@ class Highway extends Block {
   }
 }
 
+const KEYS = {left : false, right : false};
 const ROAD_MARKS_AMOUNT = 10;
 const HIGHWAY_WIDTH = WIDTH / 1.3;
 const GRASS_BLOCKS = [];
@@ -71,8 +74,7 @@ function gameLoop() {
 
 function initGame() {
     ROAD = new Highway((WIDTH / 2) - (HIGHWAY_WIDTH / 2), 0, HIGHWAY_WIDTH, HEIGHT, "#2A2A2A");
-    PLAYER = new Car(WIDTH / 2 - CAR_WIDTH / 2, HEIGHT - CAR_HEIGHT * 1.6, CAR_WIDTH, CAR_HEIGHT, "blue");
-    console.log("ROAD LENGTH - " + ROAD.roadMarks.length);
+    PLAYER = new Car(ROAD.x + ROAD.width / 2 - CAR_WIDTH / 2, HEIGHT - CAR_HEIGHT * 1.6, CAR_WIDTH, CAR_HEIGHT, "blue", 2);
     initGrassBlocks();
     gameLoop();
 }
@@ -86,6 +88,40 @@ function draw() {
 function update() {
   updateGrassBlocks();
   updateRoad();
+  updatePlayer();
+}
+
+function updatePlayer() {
+  let roadBlock = ROAD.width / 3;
+  let playerOffset = roadBlock / 2 - PLAYER.width / 2;
+  switch (PLAYER.lane) {
+    case 1:
+      if (KEYS.right) {
+        PLAYER.x = ROAD.x + roadBlock + playerOffset;
+        PLAYER.lane = 2;
+      }
+      break;
+    case 2:
+      if (KEYS.right) {
+        PLAYER.x = ROAD.x + roadBlock * 2 + playerOffset;;
+        PLAYER.lane = 3;
+      }
+      else if (KEYS.left) {
+        PLAYER.x = ROAD.x + playerOffset;;
+        PLAYER.lane = 1;
+      }
+      break;
+    case 3:
+      if (KEYS.left) {
+        PLAYER.x = ROAD.x + roadBlock + playerOffset;;
+        PLAYER.lane = 2;
+      }
+      break;
+    default:
+  }
+  // Reset since we just looking for the tap.
+  KEYS.right = false;
+  KEYS.left = false;
 }
 
 function updateRoad() {
@@ -167,4 +203,15 @@ function drawPlayer(){
   ctx.beginPath();
   ctx.rect(PLAYER.x, PLAYER.y, PLAYER.width, PLAYER.height);
   ctx.fill();
+}
+
+function checkInput(event) {
+  switch(event.keyCode) {
+    case 37:
+      KEYS.left = event;
+    break;
+    case 39:
+      KEYS.right = event;
+    break;
+  }
 }
