@@ -50,15 +50,16 @@ class Highway extends Block {
 }
 //=====================================================
 const CAR_COLORS = ["#800000", "#800080","#4B0082",
-  "#2F4F4F","#D2691E","#DAA520","#00FFFF","#DC143C",
+  "#2F4F4F","#D2691E","#DAA520","#380474","#DC143C",
   "#FF8C00","#FFD700","#FF4500","#FF1493", "#7a003d"];
+const WINDOW_COLOR = "#00FFFF";
 const GAME_STATE = {PLAY : 0, MENU : 1};
 const KEYS              = {left : false, right : false};
 const ROAD_MARKS_AMOUNT = 4;
 const HIGHWAY_WIDTH     = WIDTH / 1.3;
 const GRASS_BLOCKS      = [];
 const CAR_WIDTH         = 45;
-const CAR_HEIGHT        = 60;
+const CAR_HEIGHT        = 65;
 const BACKGROUND_SPEED  = 26;
 const TRAFFIC_SPEED     = 11;
 //=====================================================
@@ -285,6 +286,7 @@ function updateTraffic() {
     let car = TRAFFIC.pop();
     let posObj = generateRandomLanePos();
     car.color = generateRandomColor();
+
     car.x = posObj.x;
     car.lane = posObj.lane;
     car.y = -car.height;
@@ -334,6 +336,12 @@ function drawTraffic() {
     ctx.beginPath();
     ctx.rect(car.x, car.y, car.width, car.height);
     ctx.fill();
+
+    ctx.fillStyle = WINDOW_COLOR;
+    ctx.beginPath();
+    ctx.rect(car.x + car.width / 8, car.y + car.height / 4.2, car.width - car.width / 4, car.height / 5.5);
+    ctx.rect(car.x + car.width / 8, car.y + car.height / 1.6, car.width - car.width / 4, car.height / 7);
+    ctx.fill();
   }
 }
 
@@ -370,6 +378,12 @@ function drawPlayer(){
   ctx.fillStyle = PLAYER.color;
   ctx.beginPath();
   ctx.rect(PLAYER.x, PLAYER.y, PLAYER.width, PLAYER.height);
+  ctx.fill();
+
+  ctx.fillStyle = WINDOW_COLOR;
+  ctx.beginPath();
+  ctx.rect(PLAYER.x + PLAYER.width / 8, PLAYER.y + PLAYER.height / 4.2, PLAYER.width - PLAYER.width / 4, PLAYER.height / 5.5);
+  ctx.rect(PLAYER.x + PLAYER.width / 8, PLAYER.y + PLAYER.height / 1.6, PLAYER.width - PLAYER.width / 4, PLAYER.height / 7);
   ctx.fill();
 }
 
