@@ -49,6 +49,9 @@ class Highway extends Block {
   }
 }
 //=====================================================
+const CAR_COLORS = ["#800000", "#800080","#4B0082",
+  "#2F4F4F","#D2691E","#DAA520","#00FFFF","#DC143C",
+  "#FF8C00","#FFD700","#FF4500","#FF1493", "#7a003d"];
 const GAME_STATE = {PLAY : 0, MENU : 1};
 const KEYS              = {left : false, right : false};
 const ROAD_MARKS_AMOUNT = 4;
@@ -129,7 +132,6 @@ function update() {
 
 // Helpers
 //=====================================================
-
 function loadSounds() {
   CRASH_SOUND = new Audio("sounds/car_crash.wav");
   POINT_SOUND = new Audio("sounds/points_10.wav");
@@ -188,7 +190,12 @@ function checkInput(event) {
   }
 }
 
-function randomizeLanePos() {
+function generateRandomColor() {
+  let randomIndex = Math.floor(Math.random() * CAR_COLORS.length);
+  return CAR_COLORS[randomIndex];
+}
+
+function generateRandomLanePos() {
   let roadBlock = ROAD.width / 3;
   let carOffsetX = roadBlock / 2 - CAR_WIDTH / 2;
   let lane = Math.floor(Math.random()*3)+1;
@@ -213,9 +220,10 @@ function createTraffic() {
   let offsetY = HEIGHT / amountOfTraffic;
   let yPos = -CAR_HEIGHT;
   for (let i = 0; i < amountOfTraffic; i++) {
-    let xPos = randomizeLanePos();
+    let xPos = generateRandomLanePos();
+    let randomColor = generateRandomColor();
     // Unshift since we're going back with the offset!
-    TRAFFIC.unshift(new Car(xPos.x, yPos, CAR_WIDTH, CAR_HEIGHT, "#7a003d", xPos.lane))
+    TRAFFIC.unshift(new Car(xPos.x, yPos, CAR_WIDTH, CAR_HEIGHT, randomColor, xPos.lane))
     yPos -= offsetY;
   }
 }
@@ -275,7 +283,8 @@ function updateTraffic() {
       POINT_SOUND.play();
     }
     let car = TRAFFIC.pop();
-    let posObj = randomizeLanePos();
+    let posObj = generateRandomLanePos();
+    car.color = generateRandomColor();
     car.x = posObj.x;
     car.lane = posObj.lane;
     car.y = -car.height;
