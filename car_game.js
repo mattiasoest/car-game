@@ -63,6 +63,7 @@ const CAR_HEIGHT = 60;
 // Make these globals easy to find byt using uppercase for now.
 var ROAD;
 var PLAYER;
+var TRAFFIC = [];
 
 initGame();
 
@@ -75,6 +76,7 @@ function gameLoop() {
 function initGame() {
     ROAD = new Highway((WIDTH / 2) - (HIGHWAY_WIDTH / 2), 0, HIGHWAY_WIDTH, HEIGHT, "#2A2A2A");
     PLAYER = new Car(ROAD.x + ROAD.width / 2 - CAR_WIDTH / 2, HEIGHT - CAR_HEIGHT * 1.6, CAR_WIDTH, CAR_HEIGHT, "blue", 2);
+    createTraffic();
     initGrassBlocks();
     gameLoop();
 }
@@ -82,6 +84,7 @@ function initGame() {
 function draw() {
     drawGrass();
     drawRoad();
+    drawTraffic();
     drawPlayer();
 }
 
@@ -93,7 +96,7 @@ function update() {
 
 function updatePlayer() {
   let roadBlock = ROAD.width / 3;
-  let playerOffset = roadBlock / 2 - PLAYER.width / 2;
+  let playerOffset = roadBlock / 2 - CAR_WIDTH / 2;
   switch (PLAYER.lane) {
     case 1:
       if (KEYS.right) {
@@ -103,17 +106,17 @@ function updatePlayer() {
       break;
     case 2:
       if (KEYS.right) {
-        PLAYER.x = ROAD.x + roadBlock * 2 + playerOffset;;
+        PLAYER.x = ROAD.x + roadBlock * 2 + playerOffset;
         PLAYER.lane = 3;
       }
       else if (KEYS.left) {
-        PLAYER.x = ROAD.x + playerOffset;;
+        PLAYER.x = ROAD.x + playerOffset;
         PLAYER.lane = 1;
       }
       break;
     case 3:
       if (KEYS.left) {
-        PLAYER.x = ROAD.x + roadBlock + playerOffset;;
+        PLAYER.x = ROAD.x + roadBlock + playerOffset;
         PLAYER.lane = 2;
       }
       break;
@@ -166,6 +169,42 @@ function initGrassBlocks() {
     let block = new GrassBlock(0, offset, WIDTH, blockHeight, color);
     GRASS_BLOCKS.push(block);
     offset += blockHeight;
+  }
+}
+
+function createTraffic() {
+  let amountOfTraffic = 3
+  let roadBlock = ROAD.width / 3;
+  let carOffsetX = roadBlock / 2 - CAR_WIDTH / 2;
+  let offsetY = HEIGHT / amountOfTraffic;
+  let yPos = 0;
+  for (let i = 0; i < amountOfTraffic; i++) {
+    let lane = Math.floor(Math.random()*3)+1;
+    let xPos = 0;
+    switch (lane) {
+      case 1:
+        xPos = ROAD.x + carOffsetX;
+        break;
+      case 2:
+        xPos = ROAD.x + roadBlock + carOffsetX;
+        break;
+      case 3:
+        xPos = ROAD.x + roadBlock * 2 + carOffsetX;
+        break;
+      default:
+    }
+    TRAFFIC.push(new Car(xPos, yPos, CAR_WIDTH, CAR_HEIGHT, "#7a003d", lane))
+    yPos += offsetY;
+  }
+  console.log(TRAFFIC.length);
+}
+
+function drawTraffic() {
+  for (let car of TRAFFIC) {
+    ctx.fillStyle = car.color;
+    ctx.beginPath();
+    ctx.rect(car.x, car.y, car.width, car.height);
+    ctx.fill();
   }
 }
 
