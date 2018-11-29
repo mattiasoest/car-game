@@ -72,7 +72,7 @@ var TRAFFIC   = [];
 var POINTS     = 0;
 var CRASH_SOUND = new Audio("sounds/car_crash.wav");
 var POINT_SOUND = new Audio("sounds/points_10.wav");
-var CURRENT_STATE;
+var CURRENT_STATE = GAME_STATE.MENU;
 //Run the game!
 //=====================================================
 startGame();
@@ -116,6 +116,7 @@ function update() {
 // Helpers
 //=====================================================
 function resetGame() {
+  CURRENT_STATE = GAME_STATE.MENU;
   POINTS = 0;
   // TODO: Keep the pos of the player for now, looks weird
   // without animations to reset everything.
