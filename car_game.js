@@ -55,6 +55,7 @@ class Highway extends Block {
   }
 }
 //=====================================================
+const GAME_STATE = {PLAY : 0, MENU : 1};
 const KEYS              = {left : false, right : false};
 const ROAD_MARKS_AMOUNT = 4;
 const HIGHWAY_WIDTH     = WIDTH / 1.3;
@@ -69,8 +70,9 @@ var ROAD;
 var PLAYER;
 var TRAFFIC   = [];
 var POINTS     = 0;
-var crashSound = new Audio("sounds/car_crash.wav");
-var pointSound = new Audio("sounds/points_10.wav");
+var CRASH_SOUND = new Audio("sounds/car_crash.wav");
+var POINT_SOUND = new Audio("sounds/points_10.wav");
+var CURRENT_STATE;
 //Run the game!
 //=====================================================
 startGame();
@@ -196,15 +198,10 @@ function checkPlayerCollision() {
   if (nearestCar.y + nearestCar.height > PLAYER.y && nearestCar.y < PLAYER.y+ PLAYER.height) {
     // Easy detection with lane system.
     if (PLAYER.lane === nearestCar.lane) {
-      crashSound.play();
+      CRASH_SOUND.play();
       resetGame();
     }
   }
-}
-
-function loadSound() {
-  point.src     = "sounds/point1.wav";
-  gameOver.src = "sounds/car_crash.wav";
 }
 
 // Updaters
@@ -247,7 +244,7 @@ function updateTraffic() {
   if (lastIndex.y > HEIGHT) {
     POINTS++;
     if (POINTS !== 0 && POINTS % 10 === 0) {
-      pointSound.play();
+      POINT_SOUND.play();
     }
     let car = TRAFFIC.pop();
     let posObj = randomizeLanePos();
