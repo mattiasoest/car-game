@@ -23,29 +23,29 @@ class GrassBlock extends Block {
 class Highway extends Block {
   constructor(x, y, width, height, color) {
     super(x, y, width, height, color);
+    this.markOffset = this.height / ROAD_MARKS_AMOUNT;
     this.initRoadMarks();
   }
 
   initRoadMarks() {
-    let marksAmount = 10;
     let offsetX = this.width / 3;
-    let offsetY = this.height / marksAmount;
     let width = 2;
     let height = 30;
-    let posY = -10;
+    let posY = -height;
 
     this.roadMarks = []
     // One extra loop to keep the road "rolling" using the marks
-    for (let i = 0; i < marksAmount + 1; i++) {
+    for (let i = 0; i < ROAD_MARKS_AMOUNT + 1; i++) {
           this.roadMarks.push({
           mark_one : new Block(this.x + offsetX - width / 2, posY, width, height, "white"),
           mark_two : new Block(this.x + offsetX * 2 - width / 2, posY, width, height, "white")
         });
-        posY += offsetY;
+        posY += this.markOffset;
     }
   }
 }
 
+const ROAD_MARKS_AMOUNT = 10;
 const HIGHWAY_WIDTH = WIDTH / 1.3;
 const GRASS_BLOCKS = [];
 const ROAD         = new Highway((WIDTH / 2) - (HIGHWAY_WIDTH / 2), 0, HIGHWAY_WIDTH, HEIGHT, "#2A2A2A");
@@ -70,9 +70,24 @@ function draw() {
 
 function update() {
   updateGrassBlocks();
-  // updateRoad();
+  updateRoad();
 }
 
+function updateRoad() {
+  let lastIndex = ROAD.roadMarks[ROAD.roadMarks.length-1];
+  if (lastIndex.mark_one.y > HEIGHT) {
+      let markPair = ROAD.roadMarks.pop();
+      let y = HEIGHT / 10;
+      markPair.mark_one.y = -ROAD.markOffset;
+      markPair.mark_two.y = -ROAD.markOffset;
+      ROAD.roadMarks.unshift(markPair);
+  }
+
+  for (let markPair of ROAD.roadMarks) {
+    markPair.mark_one.y += 5;
+    markPair.mark_two.y += 5;
+  }
+}
 
 function updateGrassBlocks() {
   // Check is the last block is out of the canvas
