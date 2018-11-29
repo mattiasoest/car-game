@@ -13,6 +13,12 @@ class Block {
   }
 }
 
+class Car extends Block {
+  constructor(x, y, width, height, color, lane) {
+    super(x, y, width, height, color);
+    this.lane = lane;
+  }
+}
 
 class GrassBlock extends Block {
     constructor(x, y, width, height, color) {
@@ -48,7 +54,13 @@ class Highway extends Block {
 const ROAD_MARKS_AMOUNT = 10;
 const HIGHWAY_WIDTH = WIDTH / 1.3;
 const GRASS_BLOCKS = [];
-const ROAD         = new Highway((WIDTH / 2) - (HIGHWAY_WIDTH / 2), 0, HIGHWAY_WIDTH, HEIGHT, "#2A2A2A");
+const CAR_WIDTH = 45;
+const CAR_HEIGHT = 60;
+
+// Make these globals easy to find byt using uppercase for now.
+var ROAD;
+var PLAYER;
+
 initGame();
 
 function gameLoop() {
@@ -58,6 +70,8 @@ function gameLoop() {
 }
 
 function initGame() {
+    ROAD = new Highway((WIDTH / 2) - (HIGHWAY_WIDTH / 2), 0, HIGHWAY_WIDTH, HEIGHT, "#2A2A2A");
+    PLAYER = new Car(WIDTH / 2 - CAR_WIDTH / 2, HEIGHT - CAR_HEIGHT * 1.6, CAR_WIDTH, CAR_HEIGHT, "blue");
     console.log("ROAD LENGTH - " + ROAD.roadMarks.length);
     initGrassBlocks();
     gameLoop();
@@ -66,6 +80,7 @@ function initGame() {
 function draw() {
     drawGrass();
     drawRoad();
+    drawPlayer();
 }
 
 function update() {
@@ -145,4 +160,11 @@ function drawGrass() {
       ctx.rect(block.x, block.y, block.width, block.height);
       ctx.fill();
     }
+}
+
+function drawPlayer(){
+  ctx.fillStyle = PLAYER.color;
+  ctx.beginPath();
+  ctx.rect(PLAYER.x, PLAYER.y, PLAYER.width, PLAYER.height);
+  ctx.fill();
 }
