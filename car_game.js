@@ -63,7 +63,7 @@ const GRASS_BLOCKS      = [];
 const CAR_WIDTH         = 45;
 const CAR_HEIGHT        = 60;
 const BACKGROUND_SPEED  = 26;
-const TRAFFIC_SPEED     = 10;
+const TRAFFIC_SPEED     = 11;
 //=====================================================
 // Make these globals easy to find byt using uppercase for now.
 var ROAD;
@@ -137,11 +137,9 @@ function update() {
 function resetGame() {
   CURRENT_STATE = GAME_STATE.MENU;
   POINTS = 0;
-  // TODO: Keep the pos of the player for now, looks weird
-  // without animations to reset everything.
   // Just need to update 2 attributes for the player
-  // PLAYER.x = ROAD.x + ROAD.width / 2 - CAR_WIDTH / 2;
-  // PLAYER.lane = 2;
+  PLAYER.x = ROAD.x + ROAD.width / 2 - CAR_WIDTH / 2;
+  PLAYER.lane = 2;
   // Create new cars for now.
   // Somewhat of a waste but will do for now.
   TRAFFIC = [];
