@@ -101,7 +101,6 @@ function draw() {
   drawGrass();
   drawRoad();
   drawPlayer();
-  drawPoints();
   switch (CURRENT_STATE) {
     case GAME_STATE.PLAY:
       drawTraffic();
@@ -112,6 +111,8 @@ function draw() {
     default:
 
   }
+  // Draw points last its on the top of the canvas
+  drawPoints();
 }
 
 function update() {
@@ -127,9 +128,7 @@ function update() {
         // TODO If we create some more features
         break;
     default:
-
   }
-
 }
 
 // Helpers
