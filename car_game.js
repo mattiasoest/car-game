@@ -3,8 +3,7 @@ const ctx    = cvs.getContext("2d");
 const WIDTH  = cvs.width;
 const HEIGHT = cvs.height;
 
-
-class GrassBlock {
+class Block {
   constructor(x, y, width, height, color) {
     this.width  = width;
     this.height = height;
@@ -14,8 +13,24 @@ class GrassBlock {
   }
 }
 
-const GRASS_BLOCKS = [];
 
+class GrassBlock extends Block {
+    constructor(x, y, width, height, color) {
+      super(x, y, width, height, color);
+  }
+}
+
+class Highway extends Block {
+  constructor(x, y, width, height, color) {
+    super(x, y, width, height, color);
+    // TODO Fix road marks
+  }
+
+}
+
+const HIGHWAY_WIDTH = WIDTH / 1.3;
+const GRASS_BLOCKS = [];
+const ROAD         = new Highway((WIDTH / 2) - (HIGHWAY_WIDTH / 2), 0, HIGHWAY_WIDTH, HEIGHT, "#2A2A2A");
 initGame();
 
 function gameLoop() {
@@ -31,10 +46,12 @@ function initGame() {
 
 function draw() {
     drawGrass();
+    drawRoad();
 }
 
 function update() {
   updateGrassBlocks();
+  // updateRoad();
 }
 
 function updateGrassBlocks() {
@@ -67,6 +84,19 @@ function initGrassBlocks() {
     GRASS_BLOCKS.push(block);
     offset += blockHeight;
   }
+}
+
+function drawRoad() {
+  ctx.fillStyle = ROAD.color;
+  ctx.beginPath();
+  ctx.rect(ROAD.x, ROAD.y, ROAD.width, ROAD.height);
+  ctx.fill();
+}
+
+function initRoad() {
+
+
+
 }
 
 function drawGrass() {
