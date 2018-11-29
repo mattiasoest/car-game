@@ -98,19 +98,38 @@ function initGame() {
 }
 
 function draw() {
-    drawGrass();
-    drawRoad();
-    drawTraffic();
-    drawPlayer();
-    drawPoints();
+  drawGrass();
+  drawRoad();
+  drawPlayer();
+  drawPoints();
+  switch (CURRENT_STATE) {
+    case GAME_STATE.PLAY:
+      drawTraffic();
+      break;
+    case GAME_STATE.MENU:
+      drawPressStart();
+    break;
+    default:
+
+  }
 }
 
 function update() {
   updateGrassBlocks();
   updateRoad();
-  updateTraffic();
-  updatePlayer();
-  checkPlayerCollision();
+  switch (CURRENT_STATE) {
+    case GAME_STATE.PLAY:
+      updateTraffic();
+      updatePlayer();
+      checkPlayerCollision();
+      break;
+      case GAME_STATE.MENU:
+        // TODO If we create some more features
+        break;
+    default:
+
+  }
+
 }
 
 // Helpers
@@ -151,6 +170,10 @@ function initGrassBlocks() {
 }
 
 function checkInput(event) {
+  var key_state = (event.type == "keydown") ? true : false;
+  if (key_state && CURRENT_STATE === GAME_STATE.MENU) {
+    CURRENT_STATE = GAME_STATE.PLAY;
+  }
   switch(event.keyCode) {
     case 37:
       KEYS.left = event;
@@ -341,4 +364,11 @@ function drawPoints() {
   ctx.fillStyle = "white";
   ctx.font = "25px Verdana";
   ctx.fillText("Cars passed: " + POINTS, 5, 25);
+}
+
+function drawPressStart() {
+  ctx.fillStyle = "white";
+  ctx.font = "30px Verdana";
+  // Ugly constans for the text, will do for now.
+  ctx.fillText("Press any key to start!",38, HEIGHT / 2);
 }
