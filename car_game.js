@@ -23,9 +23,27 @@ class GrassBlock extends Block {
 class Highway extends Block {
   constructor(x, y, width, height, color) {
     super(x, y, width, height, color);
-    // TODO Fix road marks
+    this.initRoadMarks();
   }
 
+  initRoadMarks() {
+    let marksAmount = 10;
+    let offsetX = this.width / 3;
+    let offsetY = this.height / marksAmount;
+    let width = 2;
+    let height = 30;
+    let posY = -10;
+
+    this.roadMarks = []
+    // One extra loop to keep the road "rolling" using the marks
+    for (let i = 0; i < marksAmount + 1; i++) {
+          this.roadMarks.push({
+          mark_one : new Block(this.x + offsetX, posY - width / 2, width, height, "white"),
+          mark_two : new Block(this.x + offsetX * 2 - width / 2, posY, width, height, "white")
+        });
+        posY += offsetY;
+    }
+  }
 }
 
 const HIGHWAY_WIDTH = WIDTH / 1.3;
@@ -40,6 +58,7 @@ function gameLoop() {
 }
 
 function initGame() {
+    console.log("ROAD LENGTH - " + ROAD.roadMarks.length);
     initGrassBlocks();
     gameLoop();
 }
@@ -58,11 +77,8 @@ function updateGrassBlocks() {
   // Check is the last block is out of the canvas
   let lastBlock = GRASS_BLOCKS[GRASS_BLOCKS.length-1];
   if (lastBlock.y > HEIGHT) {
-    console.log("LAST COLOR " +lastBlock.color);
     // Reuse the same block
     let block = GRASS_BLOCKS.pop();
-    console.log("POPPED " + block.color);
-    console.log(GRASS_BLOCKS.length);
     block.y = -block.height;
     GRASS_BLOCKS.unshift(block);
   }
@@ -91,6 +107,19 @@ function drawRoad() {
   ctx.beginPath();
   ctx.rect(ROAD.x, ROAD.y, ROAD.width, ROAD.height);
   ctx.fill();
+
+  for (let roadMark of ROAD.roadMarks) {
+    let markOne = roadMark.mark_one;
+    let markTwo = roadMark.mark_two;
+    // Same color for both marks.
+    ctx.fillStyle = roadMark.mark_one.color;
+    ctx.beginPath();
+    ctx.rect(markOne.x, markOne.y, markOne.width, markOne.height);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.rect(markTwo.x, markTwo.y, markTwo.width, markTwo.height);
+    ctx.fill();
+  }
 }
 
 function initRoad() {
