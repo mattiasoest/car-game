@@ -5,6 +5,8 @@ const HEIGHT = cvs.height;
 
 window.addEventListener("keydown", checkInput)
 
+// Classes
+//=====================================================
 class Block {
   constructor(x, y, width, height, color) {
     this.width  = width;
@@ -52,22 +54,30 @@ class Highway extends Block {
     }
   }
 }
-
-const KEYS = {left : false, right : false};
+//=====================================================
+const KEYS              = {left : false, right : false};
 const ROAD_MARKS_AMOUNT = 4;
-const HIGHWAY_WIDTH = WIDTH / 1.3;
-const GRASS_BLOCKS = [];
-const CAR_WIDTH = 45;
-const CAR_HEIGHT = 60;
-const BACKGROUND_SPEED = 26;
-const TRAFFIC_SPEED = 10;
-
+const HIGHWAY_WIDTH     = WIDTH / 1.3;
+const GRASS_BLOCKS      = [];
+const CAR_WIDTH         = 45;
+const CAR_HEIGHT        = 60;
+const BACKGROUND_SPEED  = 26;
+const TRAFFIC_SPEED     = 10;
+//=====================================================
 // Make these globals easy to find byt using uppercase for now.
 var ROAD;
 var PLAYER;
 var TRAFFIC = [];
-
-initGame();
+//Run the game!
+//=====================================================
+startGame();
+//=====================================================
+// Implementation
+//=====================================================
+function startGame() {
+  initGame();
+  gameLoop();
+}
 
 function gameLoop() {
   update();
@@ -80,7 +90,6 @@ function initGame() {
     PLAYER = new Car(ROAD.x + ROAD.width / 2 - CAR_WIDTH / 2, HEIGHT - CAR_HEIGHT * 2.5, CAR_WIDTH, CAR_HEIGHT, "blue", 2);
     createTraffic();
     initGrassBlocks();
-    gameLoop();
 }
 
 function draw() {
@@ -97,6 +106,66 @@ function update() {
   updatePlayer();
 }
 
+// Helpers
+//=====================================================
+function initGrassBlocks() {
+  // Needs to be split in an odd number
+  let screenSplit = 5;
+  let blockHeight = HEIGHT / screenSplit;
+  let offset = -blockHeight;
+  // Create 1 extra block to keep the background "rolling"
+  for (let i = 1; i <= screenSplit + 1; i++) {
+    let color = i % 2 === 0 ? "#006400" : "#228B22";
+    let block = new GrassBlock(0, offset, WIDTH, blockHeight, color);
+    GRASS_BLOCKS.push(block);
+    offset += blockHeight;
+  }
+}
+
+function checkInput(event) {
+  switch(event.keyCode) {
+    case 37:
+      KEYS.left = event;
+    break;
+    case 39:
+      KEYS.right = event;
+    break;
+  }
+}
+
+function randomizeLanePos() {
+  let roadBlock = ROAD.width / 3;
+  let carOffsetX = roadBlock / 2 - CAR_WIDTH / 2;
+  let lane = Math.floor(Math.random()*3)+1;
+  let xPos = 0;
+  switch (lane) {
+    case 1:
+      xPos = ROAD.x + carOffsetX;
+      break;
+    case 2:
+      xPos = ROAD.x + roadBlock + carOffsetX;
+      break;
+    case 3:
+      xPos = ROAD.x + roadBlock * 2 + carOffsetX;
+      break;
+    default:
+  }
+  return x = {x : xPos, lane : lane};
+}
+
+function createTraffic() {
+  let amountOfTraffic = 3;
+  let offsetY = HEIGHT / amountOfTraffic;
+  let yPos = 0;
+  for (let i = 0; i < amountOfTraffic; i++) {
+    let xPos = randomizeLanePos();
+    TRAFFIC.push(new Car(xPos.x, yPos, CAR_WIDTH, CAR_HEIGHT, "#7a003d", xPos.lane))
+    yPos += offsetY;
+  }
+}
+
+// Updaters
+//=====================================================
 function updatePlayer() {
   let roadBlock = ROAD.width / 3;
   let playerOffset = roadBlock / 2 - CAR_WIDTH / 2;
@@ -177,51 +246,8 @@ function updateGrassBlocks() {
   }
 }
 
-function initGrassBlocks() {
-  // Needs to be split in an odd number
-  let screenSplit = 5;
-  let blockHeight = HEIGHT / screenSplit;
-  let offset = -blockHeight;
-  // Create 1 extra block to keep the background "rolling"
-  for (let i = 1; i <= screenSplit + 1; i++) {
-    let color = i % 2 === 0 ? "#006400" : "#228B22";
-    let block = new GrassBlock(0, offset, WIDTH, blockHeight, color);
-    GRASS_BLOCKS.push(block);
-    offset += blockHeight;
-  }
-}
-
-function randomizeLanePos() {
-  let roadBlock = ROAD.width / 3;
-  let carOffsetX = roadBlock / 2 - CAR_WIDTH / 2;
-  let lane = Math.floor(Math.random()*3)+1;
-  let xPos = 0;
-  switch (lane) {
-    case 1:
-      xPos = ROAD.x + carOffsetX;
-      break;
-    case 2:
-      xPos = ROAD.x + roadBlock + carOffsetX;
-      break;
-    case 3:
-      xPos = ROAD.x + roadBlock * 2 + carOffsetX;
-      break;
-    default:
-  }
-  return x = {x : xPos, lane : lane};
-}
-
-function createTraffic() {
-  let amountOfTraffic = 3;
-  let offsetY = HEIGHT / amountOfTraffic;
-  let yPos = 0;
-  for (let i = 0; i < amountOfTraffic; i++) {
-    let xPos = randomizeLanePos();
-    TRAFFIC.push(new Car(xPos.x, yPos, CAR_WIDTH, CAR_HEIGHT, "#7a003d", xPos.lane))
-    yPos += offsetY;
-  }
-}
-
+// Draw functions
+//=====================================================
 function drawTraffic() {
   for (let car of TRAFFIC) {
     ctx.fillStyle = car.color;
@@ -265,15 +291,4 @@ function drawPlayer(){
   ctx.beginPath();
   ctx.rect(PLAYER.x, PLAYER.y, PLAYER.width, PLAYER.height);
   ctx.fill();
-}
-
-function checkInput(event) {
-  switch(event.keyCode) {
-    case 37:
-      KEYS.left = event;
-    break;
-    case 39:
-      KEYS.right = event;
-    break;
-  }
 }
