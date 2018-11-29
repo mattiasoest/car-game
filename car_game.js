@@ -202,7 +202,6 @@ function updatePlayer() {
 function updateTraffic() {
   let lastIndex = TRAFFIC[TRAFFIC.length - 1];
   if (lastIndex.y > HEIGHT) {
-    console.log("LOL");
     let car = TRAFFIC.pop();
     let posObj = randomizeLanePos();
     car.x = posObj.x;
@@ -226,8 +225,8 @@ function updateRoad() {
   }
 
   for (let markPair of ROAD.roadMarks) {
-    markPair.mark_one.y += SPEED;
-    markPair.mark_two.y += SPEED;
+    markPair.mark_one.y += BACKGROUND_SPEED;
+    markPair.mark_two.y += BACKGROUND_SPEED;
   }
 }
 
@@ -242,7 +241,7 @@ function updateGrassBlocks() {
   }
 
   for (let block of GRASS_BLOCKS) {
-    block.y += SPEED;
+    block.y += BACKGROUND_SPEED;
   }
 }
 
