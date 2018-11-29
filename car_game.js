@@ -231,8 +231,9 @@ function createTraffic() {
 
 function checkPlayerCollision() {
   // Only check collision if neccessary
+  let hitBoxCut = 7;
   for (let car of TRAFFIC) {
-    if (car.y + car.height > PLAYER.y && car.y < PLAYER.y+ PLAYER.height) {
+    if (car.y + car.height > PLAYER.y + hitBoxCut && car.y < PLAYER.y + PLAYER.height - hitBoxCut) {
       // Easy detection with lane system.
       if (PLAYER.lane === car.lane) {
         CRASH_SOUND.play();
