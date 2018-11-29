@@ -156,12 +156,17 @@ function randomizeLanePos() {
 function createTraffic() {
   let amountOfTraffic = 3;
   let offsetY = HEIGHT / amountOfTraffic;
-  let yPos = 0;
+  let yPos = -CAR_HEIGHT;
   for (let i = 0; i < amountOfTraffic; i++) {
     let xPos = randomizeLanePos();
-    TRAFFIC.push(new Car(xPos.x, yPos, CAR_WIDTH, CAR_HEIGHT, "#7a003d", xPos.lane))
-    yPos += offsetY;
+    // Unshift since we're going back with the offset!
+    TRAFFIC.unshift(new Car(xPos.x, yPos, CAR_WIDTH, CAR_HEIGHT, "#7a003d", xPos.lane))
+    yPos -= offsetY;
   }
+}
+
+function checkPlayerCollision() {
+
 }
 
 // Updaters
