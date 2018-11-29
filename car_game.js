@@ -67,7 +67,10 @@ const TRAFFIC_SPEED     = 10;
 // Make these globals easy to find byt using uppercase for now.
 var ROAD;
 var PLAYER;
-var TRAFFIC = [];
+var TRAFFIC   = [];
+var POINTS     = 0;
+var crashSound = new Audio("sounds/car_crash.wav");
+var pointSound = new Audio("sounds/points_10.wav");
 //Run the game!
 //=====================================================
 startGame();
@@ -97,6 +100,7 @@ function draw() {
     drawRoad();
     drawTraffic();
     drawPlayer();
+    drawPoints();
 }
 
 function update() {
@@ -110,6 +114,7 @@ function update() {
 // Helpers
 //=====================================================
 function resetGame() {
+  POINTS = 0;
   // TODO: Keep the pos of the player for now, looks weird
   // without animations to reset everything.
   // Just need to update 2 attributes for the player
@@ -191,10 +196,15 @@ function checkPlayerCollision() {
   if (nearestCar.y + nearestCar.height > PLAYER.y && nearestCar.y < PLAYER.y+ PLAYER.height) {
     // Easy detection with lane system.
     if (PLAYER.lane === nearestCar.lane) {
-      console.log("BAM");
+      crashSound.play();
       resetGame();
     }
   }
+}
+
+function loadSound() {
+  point.src     = "sounds/point1.wav";
+  gameOver.src = "sounds/car_crash.wav";
 }
 
 // Updaters
@@ -235,6 +245,10 @@ function updatePlayer() {
 function updateTraffic() {
   let lastIndex = TRAFFIC[TRAFFIC.length - 1];
   if (lastIndex.y > HEIGHT) {
+    POINTS++;
+    if (POINTS !== 0 && POINTS % 10 === 0) {
+      pointSound.play();
+    }
     let car = TRAFFIC.pop();
     let posObj = randomizeLanePos();
     car.x = posObj.x;
@@ -323,4 +337,10 @@ function drawPlayer(){
   ctx.beginPath();
   ctx.rect(PLAYER.x, PLAYER.y, PLAYER.width, PLAYER.height);
   ctx.fill();
+}
+
+function drawPoints() {
+  ctx.fillStyle = "white";
+  ctx.font = "25px Verdana";
+  ctx.fillText("Cars passed: " + POINTS, 5, 25);
 }
