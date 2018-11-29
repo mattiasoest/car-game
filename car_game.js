@@ -135,8 +135,8 @@ function updateRoad() {
   }
 
   for (let markPair of ROAD.roadMarks) {
-    markPair.mark_one.y += 5;
-    markPair.mark_two.y += 5;
+    markPair.mark_one.y += 8;
+    markPair.mark_two.y += 8;
   }
 }
 
@@ -151,13 +151,13 @@ function updateGrassBlocks() {
   }
 
   for (let block of GRASS_BLOCKS) {
-    block.y++;
+    block.y += 3;
   }
 }
 
 function initGrassBlocks() {
   // Needs to be split in an odd number
-  let screenSplit = 11;
+  let screenSplit = 5;
   let blockHeight = HEIGHT / screenSplit;
   let offset = -blockHeight;
   // Create 1 extra block to keep the background "rolling"
