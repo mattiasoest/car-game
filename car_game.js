@@ -38,7 +38,7 @@ class Highway extends Block {
     // One extra loop to keep the road "rolling" using the marks
     for (let i = 0; i < marksAmount + 1; i++) {
           this.roadMarks.push({
-          mark_one : new Block(this.x + offsetX, posY - width / 2, width, height, "white"),
+          mark_one : new Block(this.x + offsetX - width / 2, posY, width, height, "white"),
           mark_two : new Block(this.x + offsetX * 2 - width / 2, posY, width, height, "white")
         });
         posY += offsetY;
@@ -72,6 +72,7 @@ function update() {
   updateGrassBlocks();
   // updateRoad();
 }
+
 
 function updateGrassBlocks() {
   // Check is the last block is out of the canvas
@@ -120,12 +121,6 @@ function drawRoad() {
     ctx.rect(markTwo.x, markTwo.y, markTwo.width, markTwo.height);
     ctx.fill();
   }
-}
-
-function initRoad() {
-
-
-
 }
 
 function drawGrass() {
