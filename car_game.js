@@ -24,12 +24,6 @@ class Car extends Block {
   }
 }
 
-class GrassBlock extends Block {
-    constructor(x, y, width, height, color) {
-      super(x, y, width, height, color);
-  }
-}
-
 class Highway extends Block {
   constructor(x, y, width, height, color) {
     super(x, y, width, height, color);
@@ -160,7 +154,7 @@ function initGrassBlocks() {
   // Create 1 extra block to keep the background "rolling"
   for (let i = 1; i <= screenSplit + 1; i++) {
     let color = i % 2 === 0 ? "#006400" : "#228B22";
-    let block = new GrassBlock(0, offset, WIDTH, blockHeight, color);
+    let block = new Block(0, offset, WIDTH, blockHeight, color);
     GRASS_BLOCKS.push(block);
     offset += blockHeight;
   }
