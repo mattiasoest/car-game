@@ -61,7 +61,7 @@ const GRASS_BLOCKS      = [];
 const CAR_WIDTH         = 45;
 const CAR_HEIGHT        = 65;
 const BACKGROUND_SPEED  = 26;
-const TRAFFIC_SPEED     = 11;
+const TRAFFIC_SPEED     = 6;
 //=====================================================
 // Make these globals easy to find byt using uppercase for now.
 var ROAD;
@@ -217,7 +217,7 @@ function generateRandomLanePos() {
 }
 
 function createTraffic() {
-  let amountOfTraffic = 3;
+  let amountOfTraffic = 4;
   let offsetY = HEIGHT / amountOfTraffic;
   let yPos = -CAR_HEIGHT;
   for (let i = 0; i < amountOfTraffic; i++) {
@@ -230,15 +230,17 @@ function createTraffic() {
 }
 
 function checkPlayerCollision() {
-  let nearestCar = TRAFFIC[TRAFFIC.length -1];
   // Only check collision if neccessary
-  if (nearestCar.y + nearestCar.height > PLAYER.y && nearestCar.y < PLAYER.y+ PLAYER.height) {
-    // Easy detection with lane system.
-    if (PLAYER.lane === nearestCar.lane) {
-      CRASH_SOUND.play();
-      resetGame();
+  for (let car of TRAFFIC) {
+    if (car.y + car.height > PLAYER.y && car.y < PLAYER.y+ PLAYER.height) {
+      // Easy detection with lane system.
+      if (PLAYER.lane === car.lane) {
+        CRASH_SOUND.play();
+        resetGame();
+      }
     }
   }
+
 }
 
 // Updaters
