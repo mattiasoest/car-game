@@ -71,6 +71,8 @@ var POINTS = 0;
 var CRASH_SOUND;
 var POINT_SOUND;
 var START_GAME_SOUND;
+var LEFT_LANE_SWITCH;
+var RIGHT_LANE_SWITCH;
 var CURRENT_STATE = GAME_STATE.MENU;
 //Run the game!
 //=====================================================
@@ -137,10 +139,14 @@ function loadSounds() {
   CRASH_SOUND = new Audio("sounds/car_crash.wav");
   POINT_SOUND = new Audio("sounds/points_10.wav");
   START_GAME_SOUND = new Audio("sounds/car_start_game.wav");
+  LEFT_LANE_SWITCH = new Audio("sounds/left.wav");
+  RIGHT_LANE_SWITCH = new Audio("sounds/right.wav");
 
   CRASH_SOUND.volume = 0.15;
   POINT_SOUND.volume = 0.15;
   START_GAME_SOUND.volume = 0.1;
+  LEFT_LANE_SWITCH.volume = 0.1;
+  RIGHT_LANE_SWITCH.volume = 0.1;
 }
 function resetGame() {
   CURRENT_STATE = GAME_STATE.MENU;
@@ -254,22 +260,26 @@ function updatePlayer() {
       if (KEYS.right) {
         PLAYER.x = ROAD.x + roadBlock + playerOffset;
         PLAYER.lane = 2;
+        RIGHT_LANE_SWITCH.play();
       }
       break;
     case 2:
       if (KEYS.right) {
         PLAYER.x = ROAD.x + roadBlock * 2 + playerOffset;
         PLAYER.lane = 3;
+        RIGHT_LANE_SWITCH.play();
       }
       else if (KEYS.left) {
         PLAYER.x = ROAD.x + playerOffset;
         PLAYER.lane = 1;
+        LEFT_LANE_SWITCH.play();
       }
       break;
     case 3:
       if (KEYS.left) {
         PLAYER.x = ROAD.x + roadBlock + playerOffset;
         PLAYER.lane = 2;
+        LEFT_LANE_SWITCH.play();
       }
       break;
     default:
